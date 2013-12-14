@@ -3,8 +3,8 @@ from enchant.checker import SpellChecker # spellchecking library
 import string
 import random
 
-MAX_TWEET = 140
 RSS_FEED = 'http://answers.yahoo.com/rss/allq'
+MAX_TWEET = 140
 MAX_DIGITS = 8
 
 checker = SpellChecker('en-US')
@@ -12,15 +12,14 @@ exclude = set(string.punctuation)
 digits = '0123456789'
 
 class Post():
-	def __init__(self, q, topic):
-		self.topic = topic
+	def __init__(self, q):
 		self.question = q
 		self.score = self.caps_score() + self.spell_score()
 
 	# scores a post based on the number of all-caps words it has
 	def caps_score(self):
-		caps_count = sum([(word.isupper() and len(word) > 4) \
-			for word in self.question.split(' ')])
+		question = ''.join(ch for ch in self.question if ch not in exclude).split(' ')
+		caps_count = sum([(word.isupper() and len(word) > 4) for word in question])
 		if caps_count > 1:
 			return 1
 		else:
@@ -40,23 +39,27 @@ def get_entries():
 	entries = [post.title for post in d.entries]
 	return entries
 
+# creates a list of Post objects from the rss feed
 def process_entries(entries):
 	posts = []
 	colon_len = len(' : ')
 	for post in entries:
-		is_open = post.find(' : ')
-		if is_open and len(post) <= MAX_TWEET:
-			start = is_open + colon_len
-			topic = post[:is_open]
+		start = post.find(' : ') + colon_len
+		if len(post) <= MAX_TWEET:
 			question = post[start:]
-			posts.append(Post(question, topic))
+			posts.append(Post(question))
 	return posts
 
 def main():
 	entries = get_entries()
 	posts = process_entries(entries)
+
+	# sort posts by score
 	posts.sort(key = lambda x: x.score, reverse = True)
+
+	# remove posts with more than MAX_DIGITS digits
 	posts = [p for p in posts if p.num_digits() < MAX_DIGITS]
+
 	lucky_post = posts[random.randrange(0,6)].question
 	print(lucky_post)
 
