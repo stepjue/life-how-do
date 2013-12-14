@@ -1,48 +1,25 @@
-import feedparser # parses RSS feeds
-import enchant # spellchecking library
-import string
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# by stepjue
 
-MAX_TWEET = 140
-RSS_FEED = 'http://answers.yahoo.com/rss/allq'
+# Tweets random/stupid/funny questions from Yahoo! Answers
 
-dictionary = enchant.Dict('en_US')
-exclude = set(string.punctuation)
+import get_yahoo
+import tweepy, time
 
-class Post():
-	def __init__(self, q):
-		self.question = q
-		self.score = caps_score()
+HOUR = 3600 # in seconds
 
-	# scores a post based on the number of all-caps words it has
-	def caps_score(self):
-		caps_count = sum([(word.isupper() and len(word) > 4) \
-			for word in self.question.split(' ')])
-		if caps_count > 1:
-			return 1
-		else:
-			return 0
+CONSUMER_KEY = 'xxxxxxxxxx'
+CONSUMER_SECRET = 'xxxxxxxxxx'
+ACCESS_KEY = 'xxxxxxxxxx'
+ACCESS_SECRET = 'xxxxxxxxxx'
 
-def get_entries():
-	d = feedparser.parse(RSS_FEED)
-	entries = [post.title for post in d.entries]
-	return entries
+auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
+auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
+api = tweepy.API(auth)
 
-def process_entries(entries):
-	posts = []
-	colon_len = len(' : ')
-	for post in entries:
-		is_open = post.find(' : ')
-		if is_open and len(post) <= MAX_TWEET:
-			start = is_open + colon_len
-			question = post[start:]
-			posts.append(Post(question))
-	return posts
-
-def main():
-	entries = get_entries()
-	posts = process_entries(entries)
-	for p in posts:
-		print(p.question + ': CAPS = ' + str(p.caps_score()))
-
-if __name__ == '__main__':
-	main()
+while True:
+	newpost = get_yahoo.get_lucky_post()
+	api.update_status(newpost)
+	print newpost
+	time.sleep(3*HOUR)
