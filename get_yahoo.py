@@ -1,21 +1,16 @@
 import feedparser # parses RSS feeds
-from enchant.checker import SpellChecker # spellchecking library
 import string, random
 
 RSS_FEED = 'http://answers.yahoo.com/rss/allq'
 MAX_TWEET = 140
 MAX_DIGITS = 8
 
-checker = SpellChecker('en-US')
-exclude = set(string.punctuation)
-digits = '0123456789'
-
 class Post():
 	def __init__(self, q):
 		self.question = q
 	
 	def num_digits(self):
-		return len([ch for ch in self.question if ch in digits])
+		return len([ch for ch in self.question if ch in string.digits])
 
 def get_entries():
 	d = feedparser.parse(RSS_FEED)
