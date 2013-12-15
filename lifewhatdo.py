@@ -22,4 +22,4 @@ while True:
 	newpost = get_yahoo.get_rand_post()
 	print newpost
 	api.update_status(newpost)
-	time.sleep(HOUR)
+	time.sleep(3*HOUR)
