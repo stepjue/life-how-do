@@ -19,7 +19,7 @@ auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
 api = tweepy.API(auth)
 
 while True:
-	newpost = get_yahoo.get_lucky_post()
-	api.update_status(newpost)
+	newpost = get_yahoo.get_rand_post()
 	print newpost
-	time.sleep(3*HOUR)
+	api.update_status(newpost)
+	time.sleep(HOUR)

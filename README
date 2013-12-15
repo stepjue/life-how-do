@@ -1,5 +1,5 @@
 A twitter bot that posts random, funny and/or stupid questions from Yahoo! Answers.
 
-Right now there isn't much of an algorithm to decide whether a question is stupid or funny, but I'm working on it.
+Right now there isn't an algorithm to decide whether a question is stupid or funny, but I'm working on it.
 
-The two main python libraries that I used were feedparser (for parsing rss feeds) and tweepy (a Twitter API wrapper for Python).
+The two main Python libraries that I used were feedparser (for parsing rss feeds) and tweepy (a Twitter API wrapper for Python).

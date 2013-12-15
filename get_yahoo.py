@@ -1,7 +1,6 @@
 import feedparser # parses RSS feeds
 from enchant.checker import SpellChecker # spellchecking library
-import string
-import random
+import string, random
 
 RSS_FEED = 'http://answers.yahoo.com/rss/allq'
 MAX_TWEET = 140
@@ -14,23 +13,7 @@ digits = '0123456789'
 class Post():
 	def __init__(self, q):
 		self.question = q
-		self.score = self.caps_score() + self.spell_score()
-
-	# scores a post based on the number of all-caps words it has
-	def caps_score(self):
-		question = ''.join(ch for ch in self.question if ch not in exclude).split(' ')
-		caps_count = sum([(word.isupper() and len(word) > 4) for word in question])
-		if caps_count > 1:
-			return 1
-		else:
-			return 0
-
-	# scores a post based on the number of mispellings
-	def spell_score(self):
-		checker.set_text(self.question)
-		count = len([err for err in checker])
-		return count
-
+	
 	def num_digits(self):
 		return len([ch for ch in self.question if ch in digits])
 
@@ -50,18 +33,12 @@ def process_entries(entries):
 			posts.append(Post(question))
 	return posts
 
-def main():
+def get_rand_post():
 	entries = get_entries()
 	posts = process_entries(entries)
 
-	# sort posts by score
-	posts.sort(key = lambda x: x.score, reverse = True)
-
 	# remove posts with more than MAX_DIGITS digits
 	posts = [p for p in posts if p.num_digits() < MAX_DIGITS]
-
-	lucky_post = posts[random.randrange(0,6)].question
-	print(lucky_post)
-
-if __name__ == '__main__':
-	main()
+	post_len = len(posts)
+	rand_post = posts[random.randrange(0,post_len)].question
+	return rand_post
