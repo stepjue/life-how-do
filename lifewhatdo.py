@@ -5,7 +5,7 @@
 # Tweets random/stupid/funny questions from Yahoo! Answers
 
 import get_yahoo
-import tweepy, time
+import tweepy, time, random
 
 HOUR = 3600 # in seconds
 
@@ -22,4 +22,6 @@ while True:
 	newpost = get_yahoo.get_rand_post()
 	print newpost
 	api.update_status(newpost)
-	time.sleep(3*HOUR)
+
+	# sleeps between 30 minutes and 3 hours between tweets
+	time.sleep(random.randrange(HOUR/2, 3*HOUR))
