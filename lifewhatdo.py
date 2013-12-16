@@ -4,7 +4,7 @@
 
 # Tweets random/stupid/funny questions from Yahoo! Answers
 
-import get_yahoo
+from get_yahoo import Page
 import tweepy, time, random
 
 HOUR = 3600 # in seconds
@@ -19,7 +19,8 @@ auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
 api = tweepy.API(auth)
 
 while True:
-	newpost = get_yahoo.get_rand_post()
+	page = Page()
+	newpost = page.get_random_post()
 	print newpost
 	api.update_status(newpost)
 
