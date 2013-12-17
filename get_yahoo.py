@@ -2,35 +2,26 @@
 # -*- coding: utf-8 -*-
 # by stepjue
 
-# Parses the Yahoo! Answers RSS feed, returns a random post
+# Parses the Yahoo! Answers RSS feed, returns a random question
 
-import feedparser	# for parsing the RSS feed
-import string		# for Post.get_num_digits()
-import random 		# for Page.get_random_post()
-
-RSS_FEED = 'http://answers.yahoo.com/rss/allq'
+import feedparser  # for parsing the RSS feed
+import string      # for string.digits and string.isalnum()
+import random      # for Page.get_random_post()
 
 MAX_TWEET = 140
-MAX_DIGITS = 8
+MAX_DIGITS = MAX_SPECIAL_CHARS = 8
 COLON_LEN = len(' : ')
 
-# An object that represents an individual post.
-class Post(object):
+rss_feed = 'http://answers.yahoo.com/rss/allq'
 
-	# A post is initialized with a title, the part of the title that's the question,
-	# the length of the question, and the number of digits in the question.
+# An individual Yahoo! Answers post.
+class Post(object):
 	def __init__(self, title):
 		self.title = title
 		self.question = self.get_question()
-		self.length = self.get_length()
-		self.num_digits = self.get_num_digits()
+		self.length = len(self.question)
 	
-	def get_num_digits(self):
-		return len([ch for ch in self.question if ch in string.digits])
-
-	def get_length(self):
-		return len(self.question)
-
+	# Finds the colon in "[ <Category> ] : <Question>" and extracts the question
 	def get_question(self):
 		start = self.title.find(' : ') + COLON_LEN
 		return self.title[start:]
@@ -39,12 +30,18 @@ class Post(object):
 	def is_tweetable(self):
 		return self.length <= MAX_TWEET
 
-	# Spam posts tend to have a bunch of numbers in them, so if there are more
-	# than 8 digits, I'm marking the post as spam.
+	# I'm defining spam as a question with more than 8 digits and/or special characters
 	def is_spam(self):
-		return self.num_digits > MAX_DIGITS
+		num_digits = num_special_chars = 0
+		for char in self.question:
+			if char in string.digits:
+				num_digits += 1
+			if not char.isalnum():
+				num_special_chars += 1
 
-# An object that represents a list of tweetable posts.
+		return (num_digits > MAX_DIGITS) or (num_special_chars > MAX_SPECIAL_CHARS)
+
+# A list of tweetable Yahoo! Answers questions.
 class Page(object):
 	def __init__(self):
 		self.posts = self.get_posts()
@@ -53,14 +50,16 @@ class Page(object):
 	# Returns a list of Post objects scraped from the titles of
 	# the entries in the Yahoo! Answers RSS feed.
 	def get_posts(self):
-		d = feedparser.parse(RSS_FEED)
+		d = feedparser.parse(rss_feed)
 		posts = []
-		for post in d.entries:
-			p = Post(post.title)
-			if p.is_tweetable() and not p.is_spam():
-				posts.append(p)
+		for entry in d.entries:
+			post = Post(entry.title)
+			if post.is_tweetable() and not post.is_spam():
+				posts.append(post)
 		return posts
 
-	# Grabs a random post from the page
-	def get_random_post(self):
-		return self.posts[random.randrange(0,self.num_posts)].question
+	# Grabs a random question from the page
+	def get_random_question(self):
+		random_post_index = random.randrange(0, self.num_posts)
+		random_post = self.posts[random_post_index]
+		return random_post.question

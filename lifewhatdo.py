@@ -8,6 +8,8 @@ from get_yahoo import Page
 import tweepy, time, random
 
 HOUR = 3600 # in seconds
+MIN_SLEEP = HOUR / 2
+MAX_SLEEP = 3 * HOUR
 
 # Twitter keys for OAuth
 CONSUMER_KEY = 'xxxxxxxxxx'
@@ -23,11 +25,9 @@ api = tweepy.API(auth)
 # The main loop that tweets questions
 while True:
 	page = Page()
-	newpost = page.get_random_post()
+	newpost = page.get_random_question()
 	api.update_status(newpost)
-
-	# Just for debugging
 	print(newpost)
 
 	# Sleeps between 30 minutes and 3 hours between tweets
-	time.sleep(random.randrange(HOUR/2, 3*HOUR))
+	time.sleep(random.randrange(MIN_SLEEP, MAX_SLEEP))
