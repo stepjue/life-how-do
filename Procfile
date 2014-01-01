@@ -1,1 +1,1 @@
-myworker: python lifewhatdo.py
+myworker: python lifehowdo.py
