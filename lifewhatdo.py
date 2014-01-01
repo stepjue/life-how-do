@@ -5,17 +5,17 @@
 # Tweets random questions from Yahoo! Answers as @lifehowdo
 
 from get_yahoo import Page
-import tweepy, time, random
+import tweepy, time, random, os
 
 HOUR = 3600 # in seconds
 MIN_SLEEP = HOUR / 2
 MAX_SLEEP = 3 * HOUR
 
 # Twitter keys for OAuth
-CONSUMER_KEY = 'xxxxxxxxxx'
-CONSUMER_SECRET = 'xxxxxxxxxx'
-ACCESS_KEY = 'xxxxxxxxxx'
-ACCESS_SECRET = 'xxxxxxxxxx'
+CONSUMER_KEY = os.environ.get('CONSUMER_KEY')
+CONSUMER_SECRET = os.environ.get('CONSUMER_SECRET')
+ACCESS_KEY = os.environ.get('ACCESS_KEY')
+ACCESS_SECRET = os.environ.get('ACCESS_SECRET')
 
 # Authenticate as @lifehowdo
 auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
