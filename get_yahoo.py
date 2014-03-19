@@ -41,6 +41,9 @@ class Post(object):
 
 		return (num_digits > MAX_DIGITS) or (num_special_chars > MAX_SPECIAL_CHARS)
 
+	def is_english(self):
+		return all([ord(c) >= ord(' ') and ord(c) <= ord('~') for c in self.question])
+
 # A list of tweetable Yahoo! Answers questions.
 class Page(object):
 	def __init__(self):
