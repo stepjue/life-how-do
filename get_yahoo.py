@@ -57,7 +57,7 @@ class Page(object):
 		posts = []
 		for entry in d.entries:
 			post = Post(entry.title)
-			if post.is_tweetable() and not post.is_spam():
+			if post.is_tweetable() and post.is_english() and not post.is_spam():
 				posts.append(post)
 		return posts
 
