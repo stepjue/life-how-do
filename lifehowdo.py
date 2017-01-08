@@ -8,8 +8,8 @@ from get_yahoo import Page
 import tweepy, time, random, os
 
 HOUR = 3600 # in seconds
-MIN_SLEEP = HOUR / 2
-MAX_SLEEP = 3 * HOUR
+MIN_SLEEP = 2 * HOUR
+MAX_SLEEP = 24 * HOUR
 
 # Twitter keys for OAuth
 CONSUMER_KEY = os.environ.get('CONSUMER_KEY')
@@ -26,6 +26,8 @@ api = tweepy.API(auth)
 while True:
 	page = Page()
 	newpost = page.get_random_question()
+    print(newpost)
+
 	api.update_status(newpost)
 	print(newpost)
 
