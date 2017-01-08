@@ -31,5 +31,5 @@ while True:
 	api.update_status(newpost)
 	print(newpost)
 
-	# Sleeps between 30 minutes and 3 hours between tweets
+	# Sleeps between 2 hours and 24 hours between tweets
 	time.sleep(random.randrange(MIN_SLEEP, MAX_SLEEP))
